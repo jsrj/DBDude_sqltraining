@@ -14,7 +14,6 @@ msql_db = msql.connect(
 
 m_cursor = msql_db.cursor()
 
-
 __fakeUsers__ = (
     "Banksy",
     "Guy Fawkes",
@@ -25,19 +24,18 @@ __fakeUsers__ = (
     "PickleJho9000"
 )
 
-# cursor.execute("DROP TABLE messages")
+#m_cursor.execute("DROP TABLE messages")
 
 create_table_messages = """
     CREATE TABLE messages (
-            m_id INTEGER PRIMARY KEY, 
+            m_id INTEGER PRIMARY KEY AUTO_INCREMENT, 
             sender VARCHAR(40), 
             recipient VARCHAR(40),
             message NVARCHAR(255)
         );
     """
 try:
-    cursor.execute(create_table_messages)
-    m_curse.execute(create_table_messages)
+    m_cursor.execute(create_table_messages)
 except:
     print("table already exists. Skipping creation.")
 
@@ -45,27 +43,28 @@ except:
 def create_messages(user="Anonymous"):
 
     insert_new_message = f"""
-        INSERT INTO messages (m_id, sender, recipient, message) 
+        INSERT INTO messages (m_id, sender, recipient, message)
         VALUES (NULL, "{user}", "Guy Fawkes", "yo dude nice pics!");
         """
-    cursor.execute(insert_new_message)
+    m_cursor.execute(insert_new_message)
 
 
 for u in __fakeUsers__:
     create_messages(u)
 
 # Always keep these two when using cursor, in order to save changes.
-db_connection.commit()
+msql_db.commit()
 
 find_by_id = 36
-cursor.execute(
+m_cursor.execute(
     f'SELECT * '
     f'FROM messages '
     f'ORDER BY m_id DESC;'
 )
-messages = cursor.fetchall()
+messages = m_cursor.fetchall()
 
 for m in messages:
     print(m)
 # cursor.execute("SELECT * FROM messages;")
-db_connection.close()
+
+msql_db.close()
